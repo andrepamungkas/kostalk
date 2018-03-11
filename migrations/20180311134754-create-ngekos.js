@@ -1,21 +1,15 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('Otps', {
+        return queryInterface.createTable('Ngekos', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            kunci: {
-                type: Sequelize.STRING
-            },
-            kode: {
-                type: Sequelize.STRING
-            },
-            ttl: {
-                type: Sequelize.INTEGER
+            biaya: {
+                type: Sequelize.NUMERIC
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +22,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('Otps');
+        return queryInterface.dropTable('Ngekos');
     }
 };

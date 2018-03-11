@@ -1,18 +1,18 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Pemilik = sequelize.define('Pemilik', {
+    var Anggota = sequelize.define('Anggota', {
         nama: DataTypes.STRING,
         noHp: DataTypes.STRING,
         email: DataTypes.STRING,
-        saldo: DataTypes.NUMERIC
+        interval: DataTypes.INTEGER
     }, {});
-    Pemilik.associate = function (models) {
+    Anggota.associate = function (models) {
         // associations can be defined here
-        Pemilik.belongsToMany(models.Anggota, {
+        Anggota.belongsToMany(models.Pemilik, {
             through: models.Ngekos,
-            foreignKey: 'idPemilik',
-            otherKey: 'idAnggota'
+            foreignKey: 'idAnggota',
+            otherKey: 'idPemilik'
         });
     };
-    return Pemilik;
+    return Anggota;
 };

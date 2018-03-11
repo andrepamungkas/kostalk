@@ -1,21 +1,27 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('Otps', {
+        return queryInterface.createTable('Tagihans', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            kunci: {
-                type: Sequelize.STRING
+            jumlah: {
+                type: Sequelize.NUMERIC
             },
-            kode: {
-                type: Sequelize.STRING
+            mulai: {
+                type: Sequelize.DATE
             },
-            ttl: {
+            akhir: {
+                type: Sequelize.DATE
+            },
+            noVa: {
                 type: Sequelize.INTEGER
+            },
+            status: {
+                type: Sequelize.STRING
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +34,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('Otps');
+        return queryInterface.dropTable('Tagihans');
     }
 };

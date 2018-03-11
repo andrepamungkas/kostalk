@@ -1,5 +1,6 @@
+const authHelper = require('../helpers/auth');
 const models = require('../models');
-var Pemilik = models.Pemilik;
+const Pemilik = models.Pemilik;
 
 async function daftar(req, res) {
     let name = req.body.nama;
@@ -23,10 +24,26 @@ async function daftar(req, res) {
         email: email,
         noHp: phone
     });
+    delete owner.dataValues.createdAt;
+    delete owner.dataValues.updatedAt;
     payload.pemilik = owner;
     res.json(payload);
 }
 
+async function requestOtp(req, res) {
+    let key = req.body.kunci;
+    let payload = {
+        success: true,
+        message: "Kode berhasil dibuat.",
+        otp:{}
+    };
+    let otp = await authHelper.requestCode(key);
+    // todo : tambah pengiriman sms/email
+    payload.otp.kunci = otp.dataValues.kunci;
+    res.json(payload);
+}
+
 module.exports = {
-    daftar
+    daftar,
+    requestOtp
 };

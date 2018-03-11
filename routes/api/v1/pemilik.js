@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
 const pemilik = require('../../../controllers/pemilik');
 const models = require('../../../models');
 const Users = models.User;
@@ -39,5 +38,21 @@ router.post('/auth/otp', [
     }
     next();
 }, pemilik.requestOtp);
+
+router.post('/auth/verifikasi', [
+    check('kunci').exists().withMessage('Kunci tidak boleh kosong.'),
+    check('kode').exists().withMessage('Kode tidak boleh kosong.')
+], async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        let payload = {
+            success: false,
+            message: "Validasi error.",
+            errors: errors.array()
+        };
+        return res.status(422).json(payload);
+    }
+    next();
+}, pemilik.verifyOtp);
 
 module.exports = router;

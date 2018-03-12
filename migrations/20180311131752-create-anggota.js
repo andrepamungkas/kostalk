@@ -9,16 +9,17 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             nama: {
+                allowNull: false,
                 type: Sequelize.STRING
             },
             noHp: {
-                type: Sequelize.STRING
+                allowNull: false,
+                type: Sequelize.STRING,
+                unique: true
             },
             email: {
-                type: Sequelize.STRING
-            },
-            interval: {
-                type: Sequelize.INTEGER
+                type: Sequelize.STRING,
+                unique: true
             },
             createdAt: {
                 allowNull: false,

@@ -9,19 +9,32 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             jumlah: {
-                type: Sequelize.NUMERIC
+                allowNull: false,
+                type: Sequelize.NUMERIC,
+                defaultValue: 0
             },
             mulai: {
-                type: Sequelize.DATE
+                allowNull: false,
+                type: Sequelize.DATE,
+                defaultValue: Sequelize.NOW
             },
             akhir: {
+                allowNull: false,
                 type: Sequelize.DATE
             },
             noVa: {
                 type: Sequelize.INTEGER
             },
             status: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                defaultValue: 'pending'
+            },
+            idNgekos: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Ngekos',
+                    key: 'id'
+                }
             },
             createdAt: {
                 allowNull: false,

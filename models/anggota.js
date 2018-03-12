@@ -3,8 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     var Anggota = sequelize.define('Anggota', {
         nama: DataTypes.STRING,
         noHp: DataTypes.STRING,
-        email: DataTypes.STRING,
-        interval: DataTypes.INTEGER
+        email: DataTypes.STRING
     }, {});
     Anggota.associate = function (models) {
         // associations can be defined here

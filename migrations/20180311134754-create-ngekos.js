@@ -9,7 +9,28 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             biaya: {
-                type: Sequelize.NUMERIC
+                allowNull: false,
+                type: Sequelize.NUMERIC,
+                defaultValue: 0
+            },
+            interval: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                defaultValue: 1
+            },
+            idPemilik: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Pemiliks',
+                    key: 'id'
+                }
+            },
+            idAnggota: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Anggota',
+                    key: 'id'
+                }
             },
             createdAt: {
                 allowNull: false,
@@ -19,6 +40,10 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DATE
             }
+        }).then(function () {
+            return queryInterface.addConstraint('Ngekos', ['idPemilik', 'idAnggota'], {
+                type: 'unique'
+            });
         });
     },
     down: (queryInterface, Sequelize) => {

@@ -73,6 +73,8 @@ router.post('/:ownerId/anggota', [
     next();
 }, pemilik.addMember);
 
+router.get('/:ownerId/anggota', pemilik.getMembers);
+
 router.get('/test', async (req, res) => {
     // let addanggota = await models.Anggota.create({
     //     nama:'Alo',

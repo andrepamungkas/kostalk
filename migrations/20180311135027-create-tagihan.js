@@ -34,7 +34,9 @@ module.exports = {
                 references: {
                     model: 'Ngekos',
                     key: 'id'
-                }
+                },
+                onUpdate: 'cascade',
+                onDelete: 'cascade'
             },
             createdAt: {
                 allowNull: false,

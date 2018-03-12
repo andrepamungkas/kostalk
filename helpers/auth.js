@@ -20,6 +20,9 @@ async function requestOtp(key) {
 
 async function verifyOtp(key, code) {
     let verify = await Otp.findOne({where: {kunci: key, kode: code}});
+    if (verify) {
+        verify.destroy();
+    }
     return verify;
 }
 

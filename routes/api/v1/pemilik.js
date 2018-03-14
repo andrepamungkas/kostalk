@@ -96,4 +96,7 @@ router.get('/test', async (req, res) => {
     }
 });
 
+router.get('/:ownerId', pemilik.getOwner);
+
+
 module.exports = router;

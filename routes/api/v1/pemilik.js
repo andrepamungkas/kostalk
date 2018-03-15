@@ -76,24 +76,7 @@ router.post('/:ownerId/anggota', [
 router.get('/:ownerId/anggota', pemilik.getMembers);
 
 router.get('/test', async (req, res) => {
-    // let addanggota = await models.Anggota.create({
-    //     nama:'Alo',
-    //     noHp: '+62222222222',
-    //     email: 'assss@gmail.com',
-    //     interval: 1
-    // });
-    let findpemilik = await models.Pemilik.findOne()
-    let findanggota = await models.Anggota.findOne()
-    try {
-        let anggota = await findpemilik.getAnggota();
-        // console.log(anggota[0].dataValues)
-        // let addangg = await findpemilik.addAnggota(addanggota);
-        let addanggota = await findpemilik.setAnggota(findanggota);
-        res.json({test: 'OK', result: anggota})
-    } catch(err) {
-        console.error(err)
-        res.json({test: 'no OK', result: err})
-    }
+    res.json({hell: 'yee'})
 });
 
 module.exports = router;

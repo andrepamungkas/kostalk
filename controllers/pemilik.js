@@ -176,10 +176,50 @@ async function getMembers(req, res) {
     res.json(payload);
 }
 
+async function updateOwner(req,res) {
+    let ownerId = req.params.ownerId;
+    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let payload = {
+        success: true,
+        message: 'Berhasil mendapatkan data pemilik.',
+    };
+    if (!findOwner) {
+        payload.success = false;
+        payload.message = 'Pemilik tidak terdaftar.';
+        res.status(401).json(payload);
+        return;
+    }else {
+        findOwner.update(req.body).then(()=>{
+            payload.data = findOwner;
+            res.json(payload);
+        })
+    }
+}
+
+async function getOwner(req,res) {
+    let ownerId = req.params.ownerId;
+    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let payload = {
+        success: true,
+        message: 'Berhasil mendapatkan data pemilik.',
+    };
+    if (!findOwner) {
+        payload.success = false;
+        payload.message = 'Pemilik tidak terdaftar.';
+        res.status(401).json(payload);
+        return;
+    }
+    payload.data = findOwner;
+    res.json(payload);
+}
+
+
 module.exports = {
     daftar,
     requestOtp,
     verifyOtp,
     addMember,
-    getMembers
+    getMembers,
+    updateOwner,
+    getOwner,
 };

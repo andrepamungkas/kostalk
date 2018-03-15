@@ -79,4 +79,25 @@ router.get('/test', async (req, res) => {
     res.json({hell: 'yee'})
 });
 
+router.get('/:ownerId', pemilik.getOwner);
+
+router.post('/:ownerId/update',  [
+    check('nama').exists().withMessage('Nama tidak boleh kosong.'),
+    check('email').isEmail().withMessage('Email tidak valid.'),
+    check('noHp').exists().withMessage('Nomor HP tidak boleh kosong.')
+        .isLength({min: 12, max: 16}).withMessage('Nomor HP tidak valid.')
+
+], async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        let payload = {
+            success: false,
+            message: "Validasi error.",
+            errors: errors.array()
+        };
+        return res.status(422).json(payload);
+    }
+    next();
+},  pemilik.updateOwner);
+
 module.exports = router;

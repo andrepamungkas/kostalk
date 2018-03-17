@@ -81,7 +81,7 @@ router.get('/test', async (req, res) => {
 
 router.get('/:ownerId', pemilik.getOwner);
 
-router.post('/:ownerId/update',  [
+router.put('/:ownerId',  [
     check('nama').exists().withMessage('Nama tidak boleh kosong.'),
     check('email').isEmail().withMessage('Email tidak valid.'),
     check('noHp').exists().withMessage('Nomor HP tidak boleh kosong.')

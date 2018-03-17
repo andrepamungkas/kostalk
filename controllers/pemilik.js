@@ -1,11 +1,13 @@
 const authHelper = require('../helpers/auth');
 const commonHelper = require('../helpers/common');
+const notificationHelper = require('../helpers/notification');
 const moment = require('moment');
 const models = require('../models');
 const Pemilik = models.Pemilik;
 const Anggota = models.Anggota;
 const Tagihan = models.Tagihan;
 const Ngekos = models.Ngekos;
+const Activation = models.Activation;
 moment().format();
 
 async function daftar(req, res) {
@@ -43,7 +45,7 @@ async function requestOtp(req, res) {
         message: 'Kode berhasil dibuat.',
         otp: {}
     };
-    let otp = await authHelper.requestCode(key);
+    let otp = await authHelper.requestOtp(key);
     // todo : tambah pengiriman sms/email
     payload.otp.kunci = otp.dataValues.kunci;
     res.json(payload);
@@ -127,6 +129,18 @@ async function addMember(req, res) {
     });
     // add invoice
     let addInvoice = await findNgekos.addTagihans([createIncoice]);
+    let addActivation = await Activation.create({
+        idAnggota: memberData.id,
+        token: await commonHelper.generateToken(),
+        ttl:86400000
+    });
+    // todo : mengirim sms ke anggota
+    let activationUrl = 'http://localhost:3003/anggota/verifikasi?userid='+memberData.id+'&key='+addActivation.token;
+    let shortUrl = await commonHelper.shortUrl(activationUrl);
+    let smsContent='Hai kak, kamu ditambahkan ke kos '+findOwner.nama+'.\n' +
+        'Harga: '+memberData.Ngekos.biaya+'/'+memberData.Ngekos.interval+' bln.\n' +
+        'Silakan verifikasi di '+shortUrl+' untuk mendapat kode pembayaran.';
+    // notificationHelper.sendSms(memberData.noHp, smsContent);
     payload.anggota = {
         id: memberData.id,
         nama: memberData.nama,

@@ -1,30 +1,27 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('Anggota', {
+        return queryInterface.createTable('Activations', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            nama: {
-                allowNull: false,
+            token: {
                 type: Sequelize.STRING
             },
-            noHp: {
-                allowNull: false,
-                type: Sequelize.STRING,
-                unique: true
+            ttl: {
+                type: Sequelize.INTEGER
             },
-            email: {
-                type: Sequelize.STRING,
-                unique: true
-            },
-            status: {
-                allowNull: false,
-                type: Sequelize.BOOLEAN,
-                defaultValue: false
+            idAnggota: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Anggota',
+                    key: 'id'
+                },
+                onUpdate: 'cascade',
+                onDelete: 'cascade'
             },
             createdAt: {
                 allowNull: false,
@@ -37,6 +34,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('Anggota');
+        return queryInterface.dropTable('Activations');
     }
 };

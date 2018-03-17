@@ -3,6 +3,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const moment = require('moment');
 const commonHelper = require('./common');
+const logHelper = require('./log');
 const Ngekos = models.Ngekos;
 const Pemilik = models.Pemilik;
 const Anggota = models.Anggota;
@@ -29,7 +30,6 @@ async function makePayment(subscribeId) {
     let subscribe = await Ngekos.findById(subscribeId);
     let member = await Anggota.findById(subscribe.idAnggota);
     let invoice = await Tagihan.findOne({order: [['id', 'DESC']]});
-    // console.log(invoice)
     let request = {
         data: {
             type: "reqpaymentcode",
@@ -46,9 +46,10 @@ async function makePayment(subscribeId) {
         }
     };
     let xml = await jsonToXml(request);
-    let callApi = await axios.post('url', xml);
+    let callApi = await axios.post('https://bersama.id/portal/index.php/api/tfp/generatePaymentCode', xml);
+    logHelper.addPaymentLog('requestPayment', xml, callApi.data);
     let response = await xmlToJson(callApi.data);
-    return request;
+    return response;
 }
 
 async function checkPayment(vaid, booking_datetime) {
@@ -65,9 +66,9 @@ async function checkPayment(vaid, booking_datetime) {
         }
     };
     let xml = await jsonToXml(request);
-    console.log(xml)
-    // let callApi = await axios.post('url', xml);
-    // let response = await xmlToJson(callApi.data);
+    let callApi = await axios.post('url', xml);
+    logHelper.addPaymentLog('checkPayment', xml, callApi.data);
+    let response = await xmlToJson(callApi.data);
     return response;
 }
 

@@ -1,9 +1,10 @@
 const payment = require('../helpers/payment');
+const logHelper = require('./log');
 const models = require('../models');
 const Tagihan = models.Tagihan;
 
 async function callback(req, res) {
-    let payload = {
+    let response = {
         return: {
             type: "resnotification",
             ack: "00",
@@ -22,9 +23,9 @@ async function callback(req, res) {
             status: 'paid'
         });
     }
-    console.log(req.body.notification.signature)
-    let xmlPayload = await payment.jsonToXml(payload);
-    res.set('Content-Type', 'text/xml').send(xmlPayload)
+    let xmlResponse = await payment.jsonToXml(response);
+    logHelper.addPaymentLog('checkPayment', req.body, xmlResponse);
+    res.set('Content-Type', 'text/xml').send(xmlResponse)
 }
 
 module.exports = {

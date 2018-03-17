@@ -25,7 +25,6 @@ async function shortUrl(longUrl) {
         return short.data.id;
     } catch (error) {
         console.error(error);
-        console.error(error.response.data.error.errors);
     }
 }
 

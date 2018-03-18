@@ -3,6 +3,7 @@ const commonHelper = require('../helpers/common');
 const notificationHelper = require('../helpers/notification');
 const moment = require('moment');
 const models = require('../models');
+const Op = require('sequelize').Op;
 const Pemilik = models.Pemilik;
 const Anggota = models.Anggota;
 const Tagihan = models.Tagihan;
@@ -19,7 +20,7 @@ async function daftar(req, res) {
         message: 'Pendaftaran berhasil.',
     };
     let countOwner = await Pemilik.count({
-        where: {email: email}
+        where: {[Op.or]: [{email: email}, {noHp: phone}]}
     });
     if (countOwner > 0) {
         payload.success = false;

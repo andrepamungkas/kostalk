@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-    var Pemilik = sequelize.define('Pemilik', {
+    let Pemilik = sequelize.define('Pemilik', {
         nama: DataTypes.STRING,
         noHp: DataTypes.STRING,
         email: DataTypes.STRING,
@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'idPemilik',
             otherKey: 'idAnggota'
         });
+        Pemilik.hasMany(models.RiwayatTransaksi, {foreignKey: 'idPemilik'});
     };
     return Pemilik;
 };

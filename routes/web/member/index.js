@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator/check');
 const member = require('../../../controllers/anggota');
 const payment = require('../../../controllers/payment');
 const xmlparser = require('express-xml-bodyparser');
+const asyncHandler = require('express-async-handler')
 
 router.get('/verifikasi', [
     check('userid').exists(),
@@ -28,6 +29,6 @@ router.post('/verifikasi', [
     next();
 }, member.postVerification);
 
-router.post('/pembayaran/cb', xmlparser({trim: false, explicitArray: false}), payment.callback);
+router.post('/pembayaran/cb', xmlparser({trim: false, explicitArray: false}), asyncHandler(payment.callback));
 
 module.exports = router;

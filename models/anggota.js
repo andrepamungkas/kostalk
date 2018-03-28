@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'idAnggota',
             otherKey: 'idPemilik'
         });
-        Anggota.hasOne(models.Activation, {foreignKey: 'idAnggota'});
     };
     return Anggota;
 };

@@ -122,7 +122,7 @@ async function addMember(req, res) {
     let memberData = getMember[0];
     let findNgekos = await Ngekos.findOne({where: {id: memberData.Ngekos.id}});
     let start = await moment(startDate).format();
-    let end = await moment(start).add(interval, 'month').format();
+    let end = await moment(start).add(interval, 'months').subtract(1, 'days').format();
     let createIncoice = await Tagihan.create({
         jumlah: memberData.Ngekos.biaya,
         mulai: start,
@@ -131,17 +131,18 @@ async function addMember(req, res) {
     // add invoice
     let addInvoice = await findNgekos.addTagihans([createIncoice]);
     let addActivation = await Activation.create({
-        idAnggota: memberData.id,
+        idNgekos: findNgekos.id,
         token: await commonHelper.generateToken(),
         ttl:86400000
     });
     // todo : mengirim sms ke anggota
-    let activationUrl = 'http://localhost:3003/anggota/verifikasi?userid='+memberData.id+'&key='+addActivation.token;
+    let activationUrl = 'http://localhost:3003/anggota/verifikasi?id='+memberData.id+'&key='+addActivation.token;
     let shortUrl = await commonHelper.shortUrl(activationUrl);
-    let smsContent='Hai kak, kamu ditambahkan ke kos '+findOwner.nama+'.\n' +
-        'Harga: '+memberData.Ngekos.biaya+'/'+memberData.Ngekos.interval+' bln.\n' +
-        'Silakan verifikasi di '+shortUrl+' untuk mendapat kode pembayaran.';
+    let smsContent = 'Hai kak, kamu ditambahkan ke kos ' + findOwner.name + '.\n' +
+        'Harga: ' + await commonHelper.idrCurrency(memberData.Ngekos.biaya) + '/' + memberData.Ngekos.interval +
+        ' bln.\n' + 'Silakan verifikasi di ' + shortUrl + ' untuk mendapat kode pembayaran.';
     // notificationHelper.sendSms(memberData.noHp, smsContent);
+    console.log(smsContent);
     payload.anggota = {
         id: memberData.id,
         nama: memberData.nama,

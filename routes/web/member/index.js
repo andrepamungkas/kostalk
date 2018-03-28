@@ -7,7 +7,7 @@ const xmlparser = require('express-xml-bodyparser');
 const asyncHandler = require('express-async-handler')
 
 router.get('/verifikasi', [
-    check('userid').exists(),
+    check('id').exists(),
     check('key').exists()
 ], async (req, res, next) => {
     const errors = validationResult(req);

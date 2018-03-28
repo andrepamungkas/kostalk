@@ -14,10 +14,10 @@ module.exports = {
             ttl: {
                 type: Sequelize.INTEGER
             },
-            idAnggota: {
+            idNgekos: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: 'Anggota',
+                    model: 'Ngekos',
                     key: 'id'
                 },
                 onUpdate: 'cascade',

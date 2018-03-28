@@ -28,9 +28,15 @@ async function shortUrl(longUrl) {
     }
 }
 
+async function idrCurrency(number) {
+    let result = Number(number).toLocaleString(['ban', 'id']);
+    return 'Rp' + result;
+}
+
 module.exports = {
     isEmail,
     md5,
     generateToken,
-    shortUrl
+    shortUrl,
+    idrCurrency
 };

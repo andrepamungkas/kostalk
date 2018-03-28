@@ -1,4 +1,6 @@
+const moment = require('moment');
 const payment = require('../helpers/payment');
+const jadwal = require('../helpers/job');
 const logHelper = require('../helpers/log');
 const models = require('../models');
 const Ngekos = models.Ngekos;
@@ -7,7 +9,6 @@ const RiwayatTransaksi = models.RiwayatTransaksi;
 
 async function callback(req, res) {
     let request = req.body.notification;
-    console.log(request)
     let response = {
         return: {
             type: "resnotification",
@@ -39,18 +40,28 @@ async function callback(req, res) {
     await RiwayatTransaksi.bulkCreate([
         {
             aliran: 'in',
-            jumlah: request.amount-(request.amount*0.01),
+            jumlah: request.amount - (request.amount * 0.01),
             keterangan: 'pendapatan',
             idAnggota: clientId[1],
             idPemilik: clientId[0]
         },
         {
             aliran: 'out',
-            jumlah: request.amount*0.01,
-            keterangan: 'pendapatan',
+            jumlah: request.amount * 0.01,
+            keterangan: 'beban',
             idAnggota: clientId[1],
             idPemilik: clientId[0]
-        }]);
+        }
+    ]);
+    let start = await moment(invoice.end).add(1, 'days').format();
+    let end = await moment(start).add(ngekos.interval, 'months').subtract(1, 'days').format();
+    await Invoice.create({
+        cost: ngekos.cost,
+        start: start,
+        end: end,
+        subscribeId: ngekos.id
+    });
+    await jadwal.createJob(ngekos.idPemilik + '.' + ngekos.idAnggota, end, {idNgekos: ngekos.id});
     res.set('Content-Type', 'text/xml').send(xmlResponse)
 }
 

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     Ngekos.associate = function (models) {
         // associations can be defined here
         Ngekos.hasMany(models.Tagihan, {foreignKey: 'idNgekos'});
+        Ngekos.hasOne(models.Activation, {foreignKey: 'idNgekos'});
     };
     return Ngekos;
 };

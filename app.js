@@ -4,6 +4,8 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const Agenda = require('agenda');
+const Agendash = require('agendash');
 
 const api = require('./routes/api');
 const web = require('./routes/web/index');
@@ -27,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
 app.use('/', web);
 app.use('/users', users);
+app.use('/jadwal', Agendash(new Agenda({db: {address: 'mongodb://127.0.0.1/agenda'}})));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

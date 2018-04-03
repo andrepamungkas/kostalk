@@ -1,4 +1,4 @@
-const jadwal = require('../helpers/job');
+// const jadwal = require('../helpers/job');
 const models = require('../models');
 const Anggota = models.Anggota;
 const Activation = models.Activation;
@@ -31,7 +31,7 @@ async function postVerification(req, res) {
     }
     let member = await Anggota.findById(findNgekos.idAnggota);
 
-    await jadwal.createJob(findNgekos.idPemilik + '.' + findNgekos.idAnggota, invoice[0].akhir, {idNgekos: findNgekos.id});
+    // await jadwal.createJob(findNgekos.idPemilik + '.' + findNgekos.idAnggota, invoice[0].akhir, {idNgekos: findNgekos.id});
     req.body.phone = member.noHp;
     await member.update({
         nama: req.body.name,

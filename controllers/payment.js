@@ -1,6 +1,6 @@
 const moment = require('moment');
 const payment = require('../helpers/payment');
-const jadwal = require('../helpers/job');
+// const jadwal = require('../helpers/job');
 const logHelper = require('../helpers/log');
 const models = require('../models');
 const Ngekos = models.Ngekos;
@@ -61,7 +61,7 @@ async function callback(req, res) {
         end: end,
         subscribeId: ngekos.id
     });
-    await jadwal.createJob(ngekos.idPemilik + '.' + ngekos.idAnggota, end, {idNgekos: ngekos.id});
+    // await jadwal.createJob(ngekos.idPemilik + '.' + ngekos.idAnggota, end, {idNgekos: ngekos.id});
     res.set('Content-Type', 'text/xml').send(xmlResponse)
 }
 

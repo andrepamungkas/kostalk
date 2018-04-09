@@ -229,12 +229,15 @@ async function getOwner(req,res) {
     res.json(payload);
 }
 
-async function updateMember(req,res){
+async function updateAnggota(req,res){
     let ownerId = req.params.ownerId;
     let memberId = req.params.memberId;
     let findOwner = await Pemilik.findById(ownerId);
     let findMember = await Anggota.findById(memberId);
-    let payload={};
+    let payload = {
+        success: true,
+        message: 'Berhasil mengubah data Anggota.'
+    };
     if (!findOwner) {
         payload.success = false;
         payload.message = 'Pemilik tidak terdaftar.';
@@ -255,6 +258,36 @@ async function updateMember(req,res){
 
 }
 
+async function deleteAnggota(req,res){
+    let ownerId = req.params.ownerId;
+    let memberId = req.params.memberId;
+    let findOwner = await Pemilik.findById(ownerId);
+    let findNgekos = await Ngekos.findOne({where : {idAnggota: memberId,idPemilik: ownerId}});
+    let payload = {
+        success: true,
+        message: 'Berhasil menghapus data Anggota.',
+    };
+    if (!findOwner) {
+        payload.success = false;
+        payload.message = 'Pemilik tidak terdaftar.';
+        res.status(401).json(payload);
+        return;
+    }
+
+    if (!findNgekos) {
+        payload.success = false;
+        payload.message = 'Anggota tidak terdaftar.';
+        res.status(401).json(payload);
+        return;
+    }
+    let ngekos = await findNgekos.destroy({where:{idAnggota:memberId}}).then((member)=>{
+        payload.data = member;
+        res.json(payload);
+    });
+
+    res.json(findNgekos);
+}
+
 module.exports = {
     daftar,
     requestOtp,
@@ -263,5 +296,6 @@ module.exports = {
     getMembers,
     updateOwner,
     getOwner,
-    updateMember,
+    updateAnggota,
+    deleteAnggota
 };

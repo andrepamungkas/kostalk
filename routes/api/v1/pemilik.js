@@ -118,6 +118,8 @@ router.put('/:ownerId/anggota/:memberId',[
         return res.status(422).json(payload);
     }
     next();
-},pemilik.updateMember);
+},pemilik.updateAnggota);
+
+router.delete("/:ownerId/anggota/:memberId",pemilik.deleteAnggota);
 
 module.exports = router;

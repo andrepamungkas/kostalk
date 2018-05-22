@@ -23,6 +23,7 @@ async function sendOtpEmail(to, code) {
 }
 
 async function sendSms(to, content) {
+    to.indexOf('0') == 0 ? to = to.replace('0', '+62') : to = '+62' + to;
     return await client.messages
         .create({
             to: to,

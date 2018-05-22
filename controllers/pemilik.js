@@ -20,7 +20,7 @@ async function daftar(req, res) {
         message: 'Pendaftaran berhasil.',
     };
     let countOwner = await Pemilik.count({
-        where: {[Op.or]: [{email: email}, {noHp: phone}]}
+        where: { [Op.or]: [{ email: email }, { noHp: phone }] }
     });
     if (countOwner > 0) {
         payload.success = false;
@@ -46,10 +46,16 @@ async function requestOtp(req, res) {
         message: 'Kode berhasil dibuat.',
         otp: {}
     };
-    let otp = await authHelper.requestOtp(key);
-    // todo : tambah pengiriman sms/email
-    payload.otp.kunci = otp.dataValues.kunci;
-    res.json(payload);
+    try {
+        let otp = await authHelper.requestOtp(key);
+        // todo : tambah pengiriman sms/email
+        console.log(otp)
+        // await notificationHelper.sendSms(key, otp.dataValues.kode + ' adalah kode masuk Kostalk kamu')
+        payload.otp.kunci = otp.dataValues.kunci;
+        res.json(payload);
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 async function verifyOtp(req, res) {
@@ -70,9 +76,9 @@ async function verifyOtp(req, res) {
     // get data owner
     let owner;
     if (await commonHelper.isEmail(key)) {
-        owner = await Pemilik.findOne({where: {email: key}});
+        owner = await Pemilik.findOne({ where: { email: key } });
     } else {
-        owner = await Pemilik.findOne({where: {noHp: key}});
+        owner = await Pemilik.findOne({ where: { noHp: key } });
     }
     if (!owner) {
         payload.success = false;
@@ -98,7 +104,7 @@ async function addMember(req, res) {
         message: 'Berhasil menambahkan anggota.',
     };
     // find owner
-    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let findOwner = await Pemilik.findOne({ where: { id: ownerId } });
     if (!findOwner) {
         payload.success = false;
         payload.message = 'Pemilik tidak terdaftar.';
@@ -106,7 +112,7 @@ async function addMember(req, res) {
         return;
     }
     // check if owner has member that has that phone
-    let checkMember = await findOwner.getAnggota({where: {noHp: phone}});
+    let checkMember = await findOwner.getAnggota({ where: { noHp: phone } });
     if (checkMember.length > 0) {
         payload.success = false;
         payload.message = 'Anda sudah memiliki anggota dengan nomor hp ' + phone + '.';
@@ -114,13 +120,13 @@ async function addMember(req, res) {
         return;
     }
     // find if member exist and create if not exist
-    let findMember = await Anggota.findOrCreate({where: {noHp: phone}, defaults: {nama: name, noHp: phone}});
+    let findMember = await Anggota.findOrCreate({ where: { noHp: phone }, defaults: { nama: name, noHp: phone } });
     // add member to ownner relation
-    let setAnggota = await findOwner.addAnggota(findMember[0], {through: {biaya: cost, interval: interval}});
+    let setAnggota = await findOwner.addAnggota(findMember[0], { through: { biaya: cost, interval: interval } });
     // get detail of member that relationed
-    let getMember = await findOwner.getAnggota({where: {noHp: phone}});
+    let getMember = await findOwner.getAnggota({ where: { noHp: phone } });
     let memberData = getMember[0];
-    let findNgekos = await Ngekos.findOne({where: {id: memberData.Ngekos.id}});
+    let findNgekos = await Ngekos.findOne({ where: { id: memberData.Ngekos.id } });
     let start = await moment(startDate).format();
     let end = await moment(start).add(interval, 'months').subtract(1, 'days').format();
     let createIncoice = await Tagihan.create({
@@ -133,10 +139,10 @@ async function addMember(req, res) {
     let addActivation = await Activation.create({
         idNgekos: findNgekos.id,
         token: await commonHelper.generateToken(),
-        ttl:86400000
+        ttl: 86400000
     });
     // todo : mengirim sms ke anggota
-    let activationUrl = 'http://localhost:3003/anggota/verifikasi?id='+memberData.id+'&key='+addActivation.token;
+    let activationUrl = 'http://localhost:3003/anggota/verifikasi?id=' + memberData.id + '&key=' + addActivation.token;
     let shortUrl = await commonHelper.shortUrl(activationUrl);
     let smsContent = 'Hai kak, kamu ditambahkan ke kos ' + findOwner.name + '.\n' +
         'Harga: ' + await commonHelper.idrCurrency(memberData.Ngekos.biaya) + '/' + memberData.Ngekos.interval +
@@ -161,7 +167,7 @@ async function getMembers(req, res) {
         message: 'Berhasil mendapatkan daftar anggota.',
     };
     // find owner
-    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let findOwner = await Pemilik.findOne({ where: { id: ownerId } });
     if (!findOwner) {
         payload.success = false;
         payload.message = 'Pemilik tidak terdaftar.';
@@ -192,9 +198,9 @@ async function getMembers(req, res) {
     res.json(payload);
 }
 
-async function updateOwner(req,res) {
+async function updateOwner(req, res) {
     let ownerId = req.params.ownerId;
-    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let findOwner = await Pemilik.findOne({ where: { id: ownerId } });
     let payload = {
         success: true,
         message: 'Berhasil mendapatkan data pemilik.',
@@ -204,17 +210,17 @@ async function updateOwner(req,res) {
         payload.message = 'Pemilik tidak terdaftar.';
         res.status(401).json(payload);
         return;
-    }else {
-        findOwner.update(req.body).then(()=>{
+    } else {
+        findOwner.update(req.body).then(() => {
             payload.data = findOwner;
             res.json(payload);
         })
     }
 }
 
-async function getOwner(req,res) {
+async function getOwner(req, res) {
     let ownerId = req.params.ownerId;
-    let findOwner = await Pemilik.findOne({where: {id: ownerId}});
+    let findOwner = await Pemilik.findOne({ where: { id: ownerId } });
     let payload = {
         success: true,
         message: 'Berhasil mendapatkan data pemilik.',

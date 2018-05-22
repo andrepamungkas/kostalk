@@ -100,4 +100,26 @@ router.put('/:ownerId',  [
     next();
 },  pemilik.updateOwner);
 
+router.put('/:ownerId/anggota/:memberId',[
+    check('nama').exists().withMessage('Nama tidak boleh kosong.'),
+    check('noHp').exists().withMessage('Nomor HP tidak boleh kosong.'),
+    check('biaya').isNumeric({min: 0}).withMessage('Biaya harus bernilai integer.'),
+    check('interval').isInt({min: 1}).withMessage('Interval tidak boleh kurang dari 1.'),
+    check('tanggal_mulai').exists().withMessage('Tanggal mulai tidak boleh kosong.')
+
+], async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        let payload = {
+            success: false,
+            message: "Validasi error.",
+            errors: errors.array()
+        };
+        return res.status(422).json(payload);
+    }
+    next();
+},pemilik.updateAnggota);
+
+router.delete("/:ownerId/anggota/:memberId",pemilik.deleteAnggota);
+
 module.exports = router;

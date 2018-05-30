@@ -50,7 +50,7 @@ async function requestOtp(req, res) {
         let otp = await authHelper.requestOtp(key);
         // todo : tambah pengiriman sms/email
         console.log(otp)
-        // await notificationHelper.sendSms(key, otp.dataValues.kode + ' adalah kode masuk Kostalk kamu')
+        await notificationHelper.sendSms(key, otp.dataValues.kode + ' adalah kode masuk Kostalk kamu')
         payload.otp.kunci = otp.dataValues.kunci;
         res.json(payload);
     } catch (e) {
@@ -177,7 +177,7 @@ async function getMembers(req, res) {
     let members = await findOwner.getAnggota({
         attributes: ['id', 'nama', 'noHp', 'email']
     });
-    payload.data = [];
+    payload.anggotaList = [];
     for (i in members) {
         let member = members[i];
         let memberData = {
@@ -193,7 +193,7 @@ async function getMembers(req, res) {
             order: [['akhir', 'DESC']]
         });
         memberData.tagihan = invoice[0];
-        payload.data.push(memberData);
+        payload.anggotaList.push(memberData);
     }
     res.json(payload);
 }
@@ -203,7 +203,7 @@ async function updateOwner(req, res) {
     let findOwner = await Pemilik.findOne({ where: { id: ownerId } });
     let payload = {
         success: true,
-        message: 'Berhasil mendapatkan data pemilik.',
+        message: 'Berhasil mengubah data pemilik.',
     };
     if (!findOwner) {
         payload.success = false;
@@ -212,7 +212,7 @@ async function updateOwner(req, res) {
         return;
     } else {
         findOwner.update(req.body).then(() => {
-            payload.data = findOwner;
+            payload.pemilik = findOwner;
             res.json(payload);
         })
     }
@@ -231,7 +231,7 @@ async function getOwner(req, res) {
         res.status(401).json(payload);
         return;
     }
-    payload.data = findOwner;
+    payload.pemilik = findOwner;
     res.json(payload);
 }
 
@@ -258,7 +258,7 @@ async function updateAnggota(req,res){
         return;
     }
     let members = await findMember.update(req.body).then((member)=>{
-        payload.data = member;
+        payload.anggota = member;
         res.json(payload);
     });
 
@@ -287,7 +287,7 @@ async function deleteAnggota(req,res){
         return;
     }
     let ngekos = await findNgekos.destroy({where:{idAnggota:memberId}}).then((member)=>{
-        payload.data = member;
+        payload.anggotaterhapus = member;
         res.json(payload);
     });
 

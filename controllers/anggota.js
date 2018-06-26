@@ -7,8 +7,8 @@ const Ngekos = models.Ngekos;
 async function getVerification(req, res) {
     let ngekosId = req.query.id;
     let token = req.query.key;
-    let findNgekos = await Ngekos.findById(ngekosId);
-    let activation = await findNgekos.getActivation({where: {token: token}});
+    let findNgekos = await Ngekos.findOne({where : {idAnggota:ngekosId}});
+    let activation = await Activation.findOne({where: {token: token}});
     if (!findNgekos || !activation) {
         return res.redirect('/');
     }
@@ -18,7 +18,7 @@ async function getVerification(req, res) {
 
 async function postVerification(req, res) {
     let ngekosId = req.query.id;
-    let findNgekos = await Ngekos.findById(ngekosId);
+    let findNgekos = await Ngekos.findOne({where : {idAnggota:ngekosId}});
     if (!findNgekos) {
         return res.redirect('/');
     }

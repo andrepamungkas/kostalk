@@ -147,7 +147,7 @@ async function addMember(req, res) {
     let smsContent = 'Hai kak, kamu ditambahkan ke kos ' + findOwner.name + '.\n' +
         'Harga: ' + await commonHelper.idrCurrency(memberData.Ngekos.biaya) + '/' + memberData.Ngekos.interval +
         ' bln.\n' + 'Silakan verifikasi di ' + shortUrl + ' untuk mendapat kode pembayaran.';
-    // notificationHelper.sendSms(memberData.noHp, smsContent);
+   // await notificationHelper.sendSms(memberData.noHp, smsContent);
     console.log(smsContent);
     payload.anggota = {
         id: memberData.id,

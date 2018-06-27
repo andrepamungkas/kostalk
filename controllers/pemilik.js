@@ -50,7 +50,7 @@ async function requestOtp(req, res) {
         let otp = await authHelper.requestOtp(key);
         // todo : tambah pengiriman sms/email
         console.log(otp)
-        await notificationHelper.sendSms(key, otp.dataValues.kode + ' adalah kode masuk Kostalk kamu')
+        // await notificationHelper.sendSms(key, otp.dataValues.kode + ' adalah kode masuk Kostalk kamu')
         payload.otp.kunci = otp.dataValues.kunci;
         res.json(payload);
     } catch (e) {
